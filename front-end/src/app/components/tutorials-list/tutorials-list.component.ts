@@ -9,11 +9,15 @@ import {TutorialService} from "../../services/tutorial.service";
 })
 export class TutorialsListComponent implements OnInit{
 
-  tutorials?: Tutorial[];
+  tutorials: Tutorial[] = [];
   currentTutorial: Tutorial = {};
   currentIndex: number = -1;
   title: string = '';
 
+  page: number = 1;
+  count: number = 0;
+  pageSize: number = 3;
+  pageSizes: number[] = [3, 6, 9];
   constructor(private tutorialService: TutorialService) { }
 
 
@@ -22,14 +26,44 @@ export class TutorialsListComponent implements OnInit{
     this.retrieveTutorials();
   }
 
+  getRequestParams(searchTitle: string, page: number, pageSize: number): any{
+    let params: any = {};
+
+    if(searchTitle){
+      params.title = searchTitle;
+    }
+    if(page){
+      params.page = page-1;
+    }
+    if(pageSize){
+      params.size = pageSize;
+    }
+    return params;
+  }
+
   retrieveTutorials(): void{
-    this.tutorialService.getAll().subscribe({
+    const params = this.getRequestParams(this.title, this.page, this.pageSize);
+
+    this.tutorialService.getAll(params).subscribe({
       next: (data) => {
-        this.tutorials = data;
+        const {tutorials, totalItems} =  data;
+        this.tutorials = tutorials;
+        this.count = totalItems;
         console.log(data);
       },
       error: (err) => console.error(err)
     });
+  }
+
+  onPageChange(event: number): void{
+    this.page = event;
+    this.retrieveTutorials();
+  }
+
+  onPageSizeChange(event: any): void{
+    this.pageSize = event.target.value;
+    this.page = 1;
+    this.retrieveTutorials();
   }
 
   refreshList(): void{
@@ -54,16 +88,8 @@ export class TutorialsListComponent implements OnInit{
   }
 
   searchTitle():void {
-    this.currentTutorial = {};
-    this.currentIndex = -1;
-
-    this.tutorialService.findByTitle(this.title).subscribe({
-      next: (data) => {
-        this.tutorials = data;
-        console.log(data);
-      },
-      error: (err) => console.error(err)
-    });
+    this.page = 1;
+    this.retrieveTutorials();
   }
 
 }

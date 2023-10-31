@@ -12,8 +12,8 @@ export class TutorialService {
 
   constructor(private http: HttpClient) { }
 
-  getAll(): Observable<Tutorial[]>{
-    return this.http.get<Tutorial[]>(baseUrl);
+  getAll(params: any): Observable<any>{
+    return this.http.get<Tutorial[]>(baseUrl, { params });
   }
 
   getTutorial(id: any): Observable<Tutorial>{
