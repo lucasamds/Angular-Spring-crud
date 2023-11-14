@@ -20,6 +20,6 @@ jobs:
             - name: Login docker hub
               run: docker login -u ${{secrets.DOCKER_USERNAME}} -p ${{secrets.DOCKER_PASSWORD}}
             - name: Build docker image
-              run: docker build -t lucsamds/tutorials-crud
+              run: docker build -t lucsamds/tutorials-crud .
             - name: Push image docker
               run: docker push lucsamds/tutorials-crud
