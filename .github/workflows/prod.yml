@@ -23,3 +23,12 @@ jobs:
               run: docker build -t lucsamds/tutorials-crud .
             - name: Push image docker
               run: docker push lucsamds/tutorials-crud
+
+    deploy:
+        needs: build
+        runs-on: self-hosted
+        steps:
+            - name: Pull image from docker hub
+              run: docker pull lucsamds/tutorials-crud:latest
+            - name: Run docker container
+              run: docker run -dp 8080:8080 --name tutorials-crud lucsamds/tutorials-crud
