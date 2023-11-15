@@ -28,9 +28,9 @@ jobs:
         needs: build
         runs-on: self-hosted
         steps:
-            - name: Pull image from docker hub
-              run: docker pull lucsamds/tutorials-crud:latest
             - name: Remove docker container
               run: docker rm -f tutorials-crud
+            - name: Pull image from docker hub
+              run: docker pull lucsamds/tutorials-crud:latest
             - name: Run docker container
               run: docker run -dp 8080:8080 -e DATABASE_USERNAME=${{secrets.DATABASE_USERNAME}} -e DATABASE_PASSWORD='${{secrets.DATABASE_PASSWORD}}' -e DATABASE_URL=${{secrets.DATABASE_URL}} -e API_URL=${{secrets.API_URL}} --name tutorials-crud lucsamds/tutorials-crud
